@@ -8,7 +8,9 @@ if (!i18n.isInitialized) {
     resources: { en: { translation: en }, ar: { translation: ar } },
     lng: "en",
     fallbackLng: "en",
+    initImmediate: false,
     interpolation: { escapeValue: false },
+    react: { useSuspense: false },
   });
 }
 
