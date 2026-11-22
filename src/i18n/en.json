@@ -1,0 +1,208 @@
+{
+  "app": { "title": "Family Games", "tagline": "Party games on your phones." },
+  "landing": {
+    "newRoom": "New room",
+    "joinCode": "Room code",
+    "join": "Join",
+    "or": "or join a friend"
+  },
+  "auth": {
+    "adminLogin": "Admin login",
+    "guestAccess": "Guest access",
+    "username": "Username",
+    "password": "Password",
+    "signIn": "Sign in",
+    "accessCode": "8-character access code",
+    "guestHint": "Enter the access code shared by the admin.",
+    "continue": "Continue",
+    "loginFailed": "Username or password is incorrect.",
+    "accessFailed": "Access code is invalid or expired.",
+    "failed": "The request could not be completed. Try again.",
+    "sessionExpired": "Your access session has expired. Sign in again.",
+    "logoutFailed": "Could not log everyone out. Check the connection and try again.",
+    "shareAccessCode": "Share this code so guests can enter",
+    "copy": "Copy access code",
+    "copied": "Copied",
+    "copyFailed": "Could not copy the code.",
+    "shareHint": "This code stops working when you log out.",
+    "guestReady": "You have access. Enter the 4-character room code shared by the admin.",
+    "logoutAdmin": "Log out everyone",
+    "logoutGuest": "Leave access"
+  },
+  "cold": {
+    "title": "Warming up the table…",
+    "body": "The game server is waking up. This can take up to a minute."
+  },
+  "conn": {
+    "connected": "Connected",
+    "reconnecting": "Reconnecting…",
+    "connecting": "Connecting…"
+  },
+  "join": {
+    "title": "Join room",
+    "name": "Your name",
+    "button": "Join",
+    "notFound": "Room not found",
+    "notFoundBody": "This room doesn't exist or has closed."
+  },
+  "lobby": {
+    "room": "Room",
+    "copy": "Copy link",
+    "copied": "Link copied",
+    "qr": "Show QR",
+    "qrTitle": "Scan to join",
+    "players": "Players",
+    "host": "Host",
+    "you": "you",
+    "waitingHost": "Waiting for host to pick a game",
+    "pickGame": "Pick a game",
+    "playersRange": "{{min}}–{{max}} players"
+  },
+  "games": {
+    "codenames": {
+      "name": "Codenames",
+      "desc": "Give one-word clues to find your team's words."
+    },
+    "imposter": {
+      "name": "Imposter",
+      "desc": "Everyone knows the word — except one."
+    },
+    "werewolves": {
+      "name": "Werewolves",
+      "desc": "One night. Hidden roles. Find the wolf."
+    }
+  },
+  "options": {
+    "language": "Game language",
+    "packs": "Word packs",
+    "noPacks": "No packs available",
+    "cards": "{{count}} cards",
+    "imposters": "Imposters",
+    "roles": "Roles in play",
+    "start": "Start game",
+    "cancel": "Cancel",
+    "loading": "Loading…"
+  },
+  "common": {
+    "backToLobby": "Back to lobby",
+    "waitingHost": "Waiting for host",
+    "holdToReveal": "Hold to reveal",
+    "confirm": "Confirm"
+  },
+  "codenames": {
+    "red": "Red",
+    "blue": "Blue",
+    "joinRed": "Join Red",
+    "joinBlue": "Join Blue",
+    "becomeSpymaster": "Become spymaster",
+    "spymaster": "Spymaster",
+    "begin": "Begin",
+    "beginHint": "Each team needs a spymaster and an operative.",
+    "turn": "{{team}} team's turn",
+    "left": "left",
+    "endTurn": "End turn",
+    "tapAgain": "Tap again to reveal",
+    "wins": "{{team}} team wins!",
+    "legend": "Your key",
+    "neutral": "Neutral",
+    "assassin": "Assassin"
+  },
+  "imposter": {
+    "youAreImposter": "You are the IMPOSTER",
+    "yourWord": "Your word",
+    "hint": "Hint: {{hint}}",
+    "seen": "I've seen it",
+    "ready": "{{ready}} / {{total}} ready",
+    "waiting": "Waiting for others…",
+    "discuss": "Discuss out loud!",
+    "timer": "Start timer",
+    "reveal": "Reveal the imposter",
+    "theImposter": "The imposter was",
+    "theWord": "The word was",
+    "nextRound": "Next round"
+  },
+  "werewolves": {
+    "yourRole": "Your role",
+    "gotIt": "Got it",
+    "waitingOthers": "Waiting for everyone…",
+    "night": "Night falls…",
+    "closeEyes": "Close your eyes",
+    "yourTurn": "Your turn",
+    "center": "Center {{n}}",
+    "day": "Day — discuss!",
+    "vote": "Vote",
+    "voteHint": "Tap who you think is a werewolf",
+    "voted": "{{voted}} / {{total}} voted",
+    "result": "Results",
+    "won": "{{team}} win!",
+    "nextGame": "Next game",
+    "prompt": {
+      "werewolf": "These are the other werewolves. If you're alone, peek at one center card.",
+      "minion": "These are the werewolves.",
+      "mason": "This is the other mason.",
+      "seer": "Look at one player's card, or two center cards.",
+      "robber": "Pick a player to swap with.",
+      "troublemaker": "Pick two other players to swap.",
+      "drunk": "Pick a center card to swap with.",
+      "insomniac": "This is your final role.",
+      "doppelganger": "Pick a player to copy.",
+      "generic": "Make your choice."
+    }
+  },
+  "roles": {
+    "doppelganger": {
+      "name": "Doppelgänger",
+      "description": "Copy another player's role."
+    },
+    "werewolf": {
+      "name": "Werewolf",
+      "description": "Find the other wolves. Stay hidden."
+    },
+    "minion": {
+      "name": "Minion",
+      "description": "Learn the wolves. Help them win."
+    },
+    "mason": { "name": "Mason", "description": "Wake to see the other mason." },
+    "seer": {
+      "name": "Seer",
+      "description": "See one player's card or two center cards."
+    },
+    "robber": {
+      "name": "Robber",
+      "description": "Swap with a player and see your new role."
+    },
+    "troublemaker": {
+      "name": "Troublemaker",
+      "description": "Swap two other players' cards."
+    },
+    "drunk": {
+      "name": "Drunk",
+      "description": "Swap with a center card without looking."
+    },
+    "insomniac": {
+      "name": "Insomniac",
+      "description": "Wake last and see your final role."
+    },
+    "villager": {
+      "name": "Villager",
+      "description": "No power. Just good instincts."
+    },
+    "hunter": {
+      "name": "Hunter",
+      "description": "If you die, whoever you voted for dies too."
+    },
+    "tanner": {
+      "name": "Tanner",
+      "description": "You win only if you are killed."
+    }
+  },
+  "teams": {
+    "village": "Village",
+    "werewolf": "Werewolves",
+    "tanner": "Tanner"
+  },
+  "errors": {
+    "not_host": "Only the host can do that.",
+    "not_enough_players": "Not enough players."
+  }
+}
