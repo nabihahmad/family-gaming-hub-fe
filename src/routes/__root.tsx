@@ -13,6 +13,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import i18n from "../i18n";
+import { api } from "@/lib/api";
+import { getAccessToken } from "@/lib/storage";
 import { Toaster } from "@/components/ui/sonner";
 import { useRestoreLang, useSystemTheme } from "@/hooks/use-ui-lang";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -148,6 +150,46 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useRestoreLang();
   useSystemTheme();
+
+  useEffect(() => {
+    let generation = 0;
+    let timer: ReturnType<typeof setInterval> | undefined;
+
+    const checkSession = () => {
+      const currentGeneration = ++generation;
+      let inFlight = false;
+      if (timer) clearInterval(timer);
+      timer = undefined;
+
+      const check = async () => {
+        const token = getAccessToken();
+        if (!token || inFlight || currentGeneration !== generation) return;
+        inFlight = true;
+        let isAdmin = false;
+        try {
+          isAdmin = (await api.session(token)).role === "admin";
+        } catch {
+          isAdmin = true;
+        } finally {
+          inFlight = false;
+        }
+        if (currentGeneration !== generation) return;
+        if (isAdmin && getAccessToken()) {
+          timer = setInterval(check, 30_000);
+        }
+      };
+
+      void check();
+    };
+
+    window.addEventListener("fg:auth-changed", checkSession);
+    checkSession();
+    return () => {
+      generation++;
+      if (timer) clearInterval(timer);
+      window.removeEventListener("fg:auth-changed", checkSession);
+    };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

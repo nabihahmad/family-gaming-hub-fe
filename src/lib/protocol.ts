@@ -46,6 +46,8 @@ export interface CodenamesView {
   board: { word: string; revealed: boolean; color?: CardColor | undefined }[];
   turn: Team;
   remaining: { red: number; blue: number };
+  clue?: { team: Team; text: string; number: number } | undefined;
+  guessesMade?: number | undefined;
   winner?: Team | undefined;
 }
 

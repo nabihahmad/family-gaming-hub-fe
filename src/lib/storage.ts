@@ -13,9 +13,16 @@ const ls = () => (typeof window === "undefined" ? null : window.localStorage);
 const ss = () => (typeof window === "undefined" ? null : window.sessionStorage);
 
 export const getAccessToken = () => ss()?.getItem(K.access) ?? null;
-export const saveAccessToken = (token: string) =>
+export const saveAccessToken = (token: string) => {
   ss()?.setItem(K.access, token);
-export const clearAccessToken = () => ss()?.removeItem(K.access);
+  if (typeof window !== "undefined")
+    window.dispatchEvent(new Event("fg:auth-changed"));
+};
+export const clearAccessToken = () => {
+  ss()?.removeItem(K.access);
+  if (typeof window !== "undefined")
+    window.dispatchEvent(new Event("fg:auth-changed"));
+};
 export function notifyAccessExpired() {
   clearAccessToken();
   if (typeof window !== "undefined")
