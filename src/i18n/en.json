@@ -143,9 +143,11 @@
     "voteHint": "Tap who you think is a werewolf",
     "voted": "{{voted}} / {{total}} voted",
     "result": "Results",
-    "won": "{{team}} win!",
+    "won": "Winner(s): {{team}}",
     "nextGame": "Next game",
-    "endGame": "End game and reveal roles",
+    "startVote": "End discussion and start vote",
+    "killed": "Killed",
+    "winnerSeparator": " and ",
     "prompt": {
       "werewolf": "These are the other werewolves. If you're alone, peek at one center card.",
       "minion": "These are the werewolves.",

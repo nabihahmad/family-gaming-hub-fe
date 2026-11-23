@@ -5,7 +5,6 @@ import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HoldReveal } from "@/components/HoldReveal";
 import { FlipCard } from "@/components/FlipCard";
-import { PlayerAvatar } from "@/components/Avatar";
 import type { WerewolvesView } from "@/lib/protocol";
 import { Confetti, HostLobbyButton, type GameProps } from "../common";
 import { RoleBack, RoleFace } from "./RoleCard";
@@ -108,7 +107,7 @@ export function Werewolves({
                 size="xl"
                 onClick={() => sendEvent("end_game")}
               >
-                {t("werewolves.endGame")}
+                {t("werewolves.startVote")}
               </Button>
             )}
           </div>
@@ -118,19 +117,22 @@ export function Werewolves({
           <>
             <h2 className="text-3xl font-bold">{t("werewolves.vote")}</h2>
             <p className="text-muted-foreground">{t("werewolves.voteHint")}</p>
+            {view.endsAt && <Countdown endsAt={view.endsAt} />}
             <div className="grid w-full grid-cols-3 gap-2">
               {others.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => sendEvent("vote", { target: p.id })}
                   className={cn(
-                    "flex min-h-24 flex-col items-center justify-center gap-1 rounded-2xl p-2 transition active:scale-95",
+                    "flex min-h-40 flex-col items-center justify-center gap-2 rounded-2xl p-2 transition active:scale-95",
                     view.myVote === p.id
-                      ? "bg-moon text-moon-foreground"
+                      ? "bg-moon/15 ring-2 ring-moon"
                       : "bg-card",
                   )}
                 >
-                  <PlayerAvatar id={p.id} name={p.name} />
+                  <div className="h-28 w-20">
+                    <RoleBack />
+                  </div>
                   <span className="w-full truncate text-sm font-medium">
                     <bdi>{p.name}</bdi>
                   </span>
@@ -159,7 +161,11 @@ export function Werewolves({
                     <FlipCard
                       flipped
                       delay={0.4 + i * 0.35}
-                      className="aspect-[3/4] w-full"
+                      className={cn(
+                        "aspect-[3/4] w-full",
+                        view.result!.dead.includes(p.id) &&
+                          "ring-4 ring-destructive",
+                      )}
                       front={<RoleBack />}
                       back={
                         role ? <RoleFace role={role} compact /> : <RoleBack />
@@ -168,11 +174,16 @@ export function Werewolves({
                     <span className="w-full truncate text-center text-sm font-medium">
                       <bdi>{p.name}</bdi>
                     </span>
+                    {view.result!.dead.includes(p.id) && (
+                      <span className="text-xs font-semibold text-destructive">
+                        {t("werewolves.killed")}
+                      </span>
+                    )}
                   </div>
                 );
               })}
             </div>
-            {view.result.winner && (
+            {view.result.winners.length > 0 && (
               <>
                 <Confetti />
                 <motion.div
@@ -182,9 +193,11 @@ export function Werewolves({
                   className="rounded-3xl bg-moon px-6 py-4 text-center text-2xl font-extrabold text-moon-foreground shadow-lift"
                 >
                   {t("werewolves.won", {
-                    team: t(`teams.${view.result.winner}`, {
-                      defaultValue: view.result.winner,
-                    }),
+                    team: view.result.winners
+                      .map((winner) =>
+                        t(`teams.${winner}`, { defaultValue: winner }),
+                      )
+                      .join(t("werewolves.winnerSeparator")),
                   })}
                 </motion.div>
               </>

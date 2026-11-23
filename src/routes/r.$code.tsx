@@ -7,7 +7,12 @@ import { ColdStart } from "@/components/ColdStart";
 import { ConnectionBadge } from "@/components/ConnectionBadge";
 import { Lobby } from "@/components/Lobby";
 import { api, withWarmup } from "@/lib/api";
-import { getAccessToken, getCreds, getName } from "@/lib/storage";
+import {
+  getAccessToken,
+  getCreds,
+  getName,
+  saveAccessToken,
+} from "@/lib/storage";
 import { useRoomStore } from "@/store/roomStore";
 import { useGameStore } from "@/store/gameStore";
 import { useDocumentLang } from "@/hooks/use-ui-lang";
@@ -17,6 +22,7 @@ import { Imposter } from "@/games/imposter/Imposter";
 import { Werewolves } from "@/games/werewolves/Werewolves";
 
 export const Route = createFileRoute("/r/$code")({
+  validateSearch: validateRoomSearch,
   head: ({ params }) => ({
     meta: [
       { title: `Room ${params.code.toUpperCase()} — Family Games` },
@@ -42,10 +48,21 @@ export const Route = createFileRoute("/r/$code")({
   component: RoomPage,
 });
 
+export function validateRoomSearch(search: Record<string, unknown>) {
+  return {
+    guest:
+      typeof search.guest === "string" &&
+      /^[A-HJ-NP-Z2-9]{8}$/i.test(search.guest)
+        ? search.guest.toUpperCase()
+        : undefined,
+  };
+}
+
 type Check = "checking" | "missing" | "ok";
 
 function RoomPage() {
   const code = Route.useParams().code.toUpperCase();
+  const { guest } = Route.useSearch();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { status, room, playerId, joinError, join, send, leave } =
@@ -57,46 +74,72 @@ function RoomPage() {
 
   useEffect(() => {
     const signal = { cancelled: false };
-    const token = getAccessToken();
-    if (!token) {
-      void navigate({ to: "/", search: { room: code } });
-      return () => {
-        signal.cancelled = true;
-        leave();
-      };
-    }
-    setName(getName());
     const onExpired = () => {
       void navigate({ to: "/", search: { room: code } });
     };
     window.addEventListener("fg:auth-expired", onExpired);
-    withWarmup(
-      async () => {
-        await api.session(token);
-        return api.getRoom(code);
-      },
-      setWarming,
-      signal,
-    )
-      .then((r) => {
+    const initializeRoom = async () => {
+      let token = getAccessToken();
+      if (!token && guest) {
+        try {
+          const session = await withWarmup(
+            () => api.redeemAccessCode(guest),
+            setWarming,
+            signal,
+          );
+          if (signal.cancelled) return;
+          token = session.accessToken;
+          saveAccessToken(token);
+        } catch {
+          if (!signal.cancelled)
+            void navigate({ to: "/", search: { room: code } });
+          return;
+        }
+      }
+
+      if (guest) {
+        await navigate({
+          to: "/r/$code",
+          params: { code },
+          search: { guest: undefined },
+          replace: true,
+        });
+      }
+
+      if (!token) {
+        void navigate({ to: "/", search: { room: code } });
+        return;
+      }
+
+      setName(getName());
+      try {
+        const roomStatus = await withWarmup(
+          async () => {
+            await api.session(token);
+            return api.getRoom(code);
+          },
+          setWarming,
+          signal,
+        );
         if (signal.cancelled) return;
-        if (!r.exists) return setCheck("missing");
+        if (!roomStatus.exists) return setCheck("missing");
         setCheck("ok");
         const creds = getCreds(code);
         if (creds?.name) join(code, creds.name);
-      })
-      .catch(() => {
+      } catch {
         if (signal.cancelled) return;
         if (!getAccessToken())
           void navigate({ to: "/", search: { room: code } });
         else setCheck("missing");
-      });
+      }
+    };
+    void initializeRoom();
     return () => {
       signal.cancelled = true;
       window.removeEventListener("fg:auth-expired", onExpired);
       leave();
     };
-  }, [code, join, leave, navigate]);
+  }, [code, guest, join, leave, navigate]);
 
   const playing = room?.phase === "playing";
   const gameLang = playing

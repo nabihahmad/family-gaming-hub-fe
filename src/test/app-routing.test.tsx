@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { routeTree } from "@/routeTree.gen";
 import i18n from "@/i18n";
+import { validateRoomSearch } from "@/routes/r.$code";
 
 // Match routes without running loaders or rendering: loaders may need a server or
 // network the test run lacks, and jsdom never loads the stylesheets React waits on.
@@ -22,5 +23,14 @@ describe("App routing", () => {
     const matches = router.matchRoutes("/");
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
+  });
+
+  it("accepts valid guest access codes from room-link search parameters", () => {
+    expect(validateRoomSearch({ guest: "abcd2345" })).toEqual({
+      guest: "ABCD2345",
+    });
+    expect(validateRoomSearch({ guest: "invalid" })).toEqual({
+      guest: undefined,
+    });
   });
 });

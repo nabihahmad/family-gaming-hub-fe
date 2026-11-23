@@ -104,7 +104,8 @@ export interface WerewolvesView {
   result?: {
     roles: Record<string, string>;
     votes?: Record<string, string> | undefined;
-    winner?: string | undefined;
+    dead: string[];
+    winners: string[];
   };
 }
 
