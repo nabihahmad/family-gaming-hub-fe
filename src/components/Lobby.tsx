@@ -12,14 +12,26 @@ import { OptionsSheet } from "./OptionsSheet";
 import { QrModal } from "./QrModal";
 import { ConnectionBadge } from "./ConnectionBadge";
 import { LangToggle } from "./LangToggle";
+import { buildRoomInviteUrl } from "@/lib/room-links";
 
-export function Lobby({ room, meId }: { room: RoomState; meId: string | null }) {
+export function Lobby({
+  room,
+  meId,
+  guestCode,
+}: {
+  room: RoomState;
+  meId: string | null;
+  guestCode: string | null;
+}) {
   const { t } = useTranslation();
   const send = useRoomStore((s) => s.send);
   const [open, setOpen] = useState<GameId | null>(null);
   const [qr, setQr] = useState(false);
   const isHost = room.hostId === meId;
-  const url = typeof window === "undefined" ? "" : `${window.location.origin}/r/${room.code}`;
+  const url =
+    typeof window === "undefined"
+      ? ""
+      : buildRoomInviteUrl(window.location.origin, room.code, guestCode);
 
   const copy = async () => {
     try { await navigator.clipboard.writeText(url); toast.success(t("lobby.copied")); } catch { /* ignore */ }

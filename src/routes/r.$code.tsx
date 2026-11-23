@@ -10,7 +10,9 @@ import { api, withWarmup } from "@/lib/api";
 import {
   getAccessToken,
   getCreds,
+  getGuestCode,
   getName,
+  saveGuestCode,
   saveAccessToken,
 } from "@/lib/storage";
 import { useRoomStore } from "@/store/roomStore";
@@ -71,6 +73,9 @@ function RoomPage() {
   const [check, setCheck] = useState<Check>("checking");
   const [warming, setWarming] = useState(false);
   const [name, setName] = useState("");
+  const [shareCode, setShareCode] = useState<string | null>(() =>
+    getGuestCode(),
+  );
 
   useEffect(() => {
     const signal = { cancelled: false };
@@ -79,6 +84,10 @@ function RoomPage() {
     };
     window.addEventListener("fg:auth-expired", onExpired);
     const initializeRoom = async () => {
+      if (guest) {
+        saveGuestCode(guest);
+        setShareCode(guest);
+      }
       let token = getAccessToken();
       if (!token && guest) {
         try {
@@ -115,7 +124,10 @@ function RoomPage() {
       try {
         const roomStatus = await withWarmup(
           async () => {
-            await api.session(token);
+            const session = await api.session(token);
+            const guestCode = session.accessCode ?? getGuestCode();
+            setShareCode(guestCode);
+            if (session.accessCode) saveGuestCode(session.accessCode);
             return api.getRoom(code);
           },
           setWarming,
@@ -214,7 +226,7 @@ function RoomPage() {
   if (room.phase === "lobby" || !current)
     return (
       <main className="min-h-dvh">
-        <Lobby room={room} meId={playerId} />
+        <Lobby room={room} meId={playerId} guestCode={shareCode} />
       </main>
     );
 

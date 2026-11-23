@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { routeTree } from "@/routeTree.gen";
 import i18n from "@/i18n";
+import { buildRoomInviteUrl } from "@/lib/room-links";
 import { validateRoomSearch } from "@/routes/r.$code";
 
 // Match routes without running loaders or rendering: loaders may need a server or
@@ -32,5 +33,11 @@ describe("App routing", () => {
     expect(validateRoomSearch({ guest: "invalid" })).toEqual({
       guest: undefined,
     });
+  });
+
+  it("adds the guest access code to room invite URLs", () => {
+    expect(
+      buildRoomInviteUrl("https://games.example", "ABCD", "ABCD2345"),
+    ).toBe("https://games.example/r/ABCD?guest=ABCD2345");
   });
 });

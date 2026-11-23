@@ -12,6 +12,7 @@ import { useDocumentLang } from "@/hooks/use-ui-lang";
 import {
   clearAccessToken,
   getAccessToken,
+  saveGuestCode,
   saveAccessToken,
 } from "@/lib/storage";
 
@@ -106,6 +107,7 @@ function Landing() {
         role: result.role,
         ...(result.role === "admin" ? { accessCode: result.accessCode } : {}),
       });
+      saveGuestCode(result.role === "admin" ? result.accessCode : accessCode);
       setPassword("");
     } catch {
       setAuthError(

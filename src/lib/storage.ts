@@ -8,11 +8,14 @@ const K = {
   room: "fg.room",
   lang: "fg.lang",
   access: "fg.access",
+  guestCode: "fg.guestCode",
 };
 const ls = () => (typeof window === "undefined" ? null : window.localStorage);
 const ss = () => (typeof window === "undefined" ? null : window.sessionStorage);
 
 export const getAccessToken = () => ss()?.getItem(K.access) ?? null;
+export const getGuestCode = () => ss()?.getItem(K.guestCode) ?? null;
+export const saveGuestCode = (code: string) => ss()?.setItem(K.guestCode, code);
 export const saveAccessToken = (token: string) => {
   ss()?.setItem(K.access, token);
   if (typeof window !== "undefined")
@@ -20,6 +23,7 @@ export const saveAccessToken = (token: string) => {
 };
 export const clearAccessToken = () => {
   ss()?.removeItem(K.access);
+  ss()?.removeItem(K.guestCode);
   if (typeof window !== "undefined")
     window.dispatchEvent(new Event("fg:auth-changed"));
 };
