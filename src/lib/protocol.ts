@@ -46,7 +46,9 @@ export interface CodenamesView {
   isSpymaster: boolean;
   board: { word: string; revealed: boolean; color?: CardColor | undefined }[];
   turn: Team;
+  endsAt?: number | undefined;
   remaining: { red: number; blue: number };
+  clueLog: { team: Team; text: string; number: number }[];
   clue?: { team: Team; text: string; number: number } | undefined;
   guessesMade?: number | undefined;
   winner?: Team | undefined;

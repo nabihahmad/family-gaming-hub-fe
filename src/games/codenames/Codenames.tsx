@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,20 @@ import { Confetti, HostLobbyButton, type GameProps } from "../common";
 import { Setup } from "./Setup";
 import { Board } from "./Board";
 import { cn } from "@/lib/utils";
+
+function Countdown({ endsAt }: { endsAt: number }) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 500);
+    return () => clearInterval(timer);
+  }, []);
+  const seconds = Math.max(0, Math.ceil((endsAt - now) / 1000));
+  return (
+    <span className="font-mono text-xl font-bold tabular-nums" dir="ltr">
+      {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
+    </span>
+  );
+}
 
 export function Codenames(props: GameProps<CodenamesView>) {
   const { view, sendEvent, isHost, backToLobby } = props;
@@ -47,6 +61,16 @@ export function Codenames(props: GameProps<CodenamesView>) {
           <span className="text-xs font-medium opacity-80">{team("blue")}</span>
         </span>
       </div>
+      {view.endsAt !== undefined && (
+        <div className="flex items-center justify-between rounded-2xl border bg-card px-4 py-2">
+          <span className="text-sm font-medium text-muted-foreground">
+            {t(
+              view.clue ? "codenames.guesserTimer" : "codenames.spymasterTimer",
+            )}
+          </span>
+          <Countdown endsAt={view.endsAt} />
+        </div>
+      )}
       {view.clue ? (
         <div
           className="rounded-2xl border bg-card px-4 py-3 text-center"
@@ -136,6 +160,31 @@ export function Codenames(props: GameProps<CodenamesView>) {
           {t("codenames.waitingClue")}
         </p>
       ) : null}
+      {view.clueLog.length > 0 && (
+        <section className="rounded-2xl border bg-card p-4">
+          <h2 className="mb-3 text-sm font-semibold">
+            {t("codenames.hintHistory")}
+          </h2>
+          <ol className="flex max-h-48 flex-col gap-2 overflow-y-auto">
+            {view.clueLog.map((clue, index) => (
+              <li
+                key={`${index}-${clue.team}`}
+                className="flex flex-wrap items-center gap-x-2 gap-y-1 border-b pb-2 last:border-b-0 last:pb-0"
+              >
+                <span className="font-semibold">{team(clue.team)}</span>
+                <bdi lang={view.lang} className="flex-1 font-medium">
+                  {clue.text}
+                </bdi>
+                <span className="text-sm text-muted-foreground">
+                  {t("codenames.clueNumber", {
+                    number: clue.number === 0 ? "∞" : clue.number,
+                  })}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
       <Board
         view={view}
         canReveal={myTurn}
