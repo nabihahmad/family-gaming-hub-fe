@@ -5,7 +5,11 @@ import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HoldReveal } from "@/components/HoldReveal";
 import { FlipCard } from "@/components/FlipCard";
-import type { WerewolvesView } from "@/lib/protocol";
+import type {
+  Player,
+  WerewolvesPrivateResult,
+  WerewolvesView,
+} from "@/lib/protocol";
 import { Confetti, HostLobbyButton, type GameProps } from "../common";
 import { RoleBack, RoleFace } from "./RoleCard";
 import { NightPrompt } from "./NightPrompt";
@@ -28,6 +32,80 @@ function Countdown({ endsAt }: { endsAt: number }) {
   );
 }
 
+function NightResults({
+  results,
+  players,
+}: {
+  results: WerewolvesPrivateResult[];
+  players: Player[];
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <section className="w-full">
+      <HoldReveal
+        className="h-56 w-full"
+        front={
+          <div className="flex h-full flex-col items-center justify-center gap-3 rounded-2xl bg-card p-4">
+            <Moon className="h-12 w-12 text-moon" />
+            <h3 className="text-center font-semibold">
+              {t("werewolves.nightResults")}
+            </h3>
+          </div>
+        }
+        back={
+          <div className="h-full overflow-y-auto rounded-2xl bg-card p-4">
+            {results.length ? (
+              <div className="flex flex-col gap-4">
+                {results.map((result, index) => (
+                  <div
+                    key={`${result.kind}-${index}`}
+                    className="flex flex-col gap-2"
+                  >
+                    <p className="text-center text-sm font-medium text-muted-foreground">
+                      {t(`roles.${result.kind}.name`)}
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-3">
+                      {result.cards.map((card) => {
+                        const centerNumber = card.target.startsWith("center-")
+                          ? Number(card.target.slice("center-".length)) + 1
+                          : undefined;
+                        const targetName =
+                          centerNumber !== undefined
+                            ? t("werewolves.center", { n: centerNumber })
+                            : (players.find(
+                                (player) => player.id === card.target,
+                              )?.name ?? card.target);
+                        return (
+                          <div
+                            key={`${card.target}-${card.role}`}
+                            className="flex w-20 flex-col items-center gap-1"
+                          >
+                            <div className="h-24 w-16">
+                              <RoleFace role={card.role} compact />
+                            </div>
+                            <span className="w-full truncate text-center text-xs">
+                              <bdi>{targetName}</bdi>
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="flex h-full items-center justify-center text-center text-sm text-muted-foreground">
+                {t("werewolves.noNightResults")}
+              </p>
+            )}
+          </div>
+        }
+      />
+    </section>
+  );
+}
+
 export function Werewolves({
   view,
   sendEvent,
@@ -38,6 +116,7 @@ export function Werewolves({
 }: GameProps<WerewolvesView>) {
   const { t } = useTranslation();
   const others = room.players.filter((p) => p.id !== meId);
+  const showNightDiscoveries = room.options?.nightDiscoveries !== false;
 
   return (
     <div className="night dark flex min-h-full flex-1 flex-col bg-background text-foreground">
@@ -101,6 +180,12 @@ export function Werewolves({
             <Sun className="h-20 w-20 text-moon" />
             <h2 className="text-3xl font-bold">{t("werewolves.day")}</h2>
             {view.endsAt && <Countdown endsAt={view.endsAt} />}
+            {showNightDiscoveries && (
+              <NightResults
+                results={view.privateResults ?? []}
+                players={room.players}
+              />
+            )}
             {isHost && (
               <Button
                 variant="moon"
@@ -118,6 +203,12 @@ export function Werewolves({
             <h2 className="text-3xl font-bold">{t("werewolves.vote")}</h2>
             <p className="text-muted-foreground">{t("werewolves.voteHint")}</p>
             {view.endsAt && <Countdown endsAt={view.endsAt} />}
+            {showNightDiscoveries && (
+              <NightResults
+                results={view.privateResults ?? []}
+                players={room.players}
+              />
+            )}
             <div className="grid w-full grid-cols-3 gap-2">
               {others.map((p) => (
                 <button

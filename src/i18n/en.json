@@ -79,6 +79,8 @@
     "cards": "{{count}} cards",
     "imposters": "Imposters",
     "roles": "Roles in play",
+    "nightDiscoveries": "Show night discoveries",
+    "nightDiscoveriesHint": "Let each player privately reveal their discoveries during the day and vote.",
     "start": "Start game",
     "cancel": "Cancel",
     "loading": "Loading…"
@@ -147,9 +149,11 @@
     "nextGame": "Next game",
     "startVote": "End discussion and start vote",
     "killed": "Killed",
+    "nightResults": "Your night discoveries",
+    "noNightResults": "You made no discoveries during the night.",
     "winnerSeparator": " and ",
     "prompt": {
-      "werewolf": "These are the other werewolves. If you're alone, peek at one center card.",
+      "werewolf": "These are the other werewolves. If you're alone, choose one of the three center cards.",
       "minion": "These are the werewolves.",
       "mason": "This is the other mason.",
       "seer": "Look at one player's card, or two center cards.",

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { api } from "@/lib/api";
 import { ROLE_IDS, type GameId, type GameOptions, type Lang, type Pack } from "@/lib/protocol";
 import { DEFAULT_ROLES, GAME_META } from "./gameMeta";
@@ -18,6 +19,7 @@ export function OptionsSheet({ game, playerCount, onClose, onStart }: { game: Ga
   const [selected, setSelected] = useState<string[]>([]);
   const [imposters, setImposters] = useState(1);
   const [roles, setRoles] = useState<string[]>(DEFAULT_ROLES);
+  const [nightDiscoveries, setNightDiscoveries] = useState(true);
   const requiredRoles = playerCount + 3;
   const maxImposters = Math.min(3, Math.max(1, Math.floor((playerCount - 1) / 2)));
   const rolesForGame = roles.length <= requiredRoles
@@ -56,7 +58,10 @@ export function OptionsSheet({ game, playerCount, onClose, onStart }: { game: Ga
     const o: GameOptions = { lang };
     if (game !== "werewolves") o.packs = selected;
     if (game === "imposter") o.imposters = imposters;
-    if (game === "werewolves") o.roles = rolesForGame;
+    if (game === "werewolves") {
+      o.roles = rolesForGame;
+      o.nightDiscoveries = nightDiscoveries;
+    }
     onStart(o);
   };
 
@@ -131,6 +136,22 @@ export function OptionsSheet({ game, playerCount, onClose, onStart }: { game: Ga
                   );
                 })}
               </div>
+            </section>
+          )}
+
+          {game === "werewolves" && (
+            <section className="flex items-center justify-between gap-4 rounded-2xl bg-muted p-4">
+              <div>
+                <h3 className="font-semibold">{t("options.nightDiscoveries")}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {t("options.nightDiscoveriesHint")}
+                </p>
+              </div>
+              <Switch
+                checked={nightDiscoveries}
+                onCheckedChange={setNightDiscoveries}
+                aria-label={t("options.nightDiscoveries")}
+              />
             </section>
           )}
 

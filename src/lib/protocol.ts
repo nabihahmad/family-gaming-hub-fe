@@ -13,6 +13,7 @@ export interface GameOptions {
   packs?: string[] | undefined;
   imposters?: number | undefined;
   roles?: string[] | undefined;
+  nightDiscoveries?: boolean | undefined;
 }
 
 export interface RoomState {
@@ -91,12 +92,17 @@ export interface WerewolvesPrompt {
   result?: { target: string; role: string }[] | undefined;
   info?: string[] | undefined;
 }
+export interface WerewolvesPrivateResult {
+  kind: RoleId;
+  cards: { target: string; role: RoleId }[];
+}
 export interface WerewolvesView {
   phase: "role_reveal" | "night" | "day" | "vote" | "result";
   lang: Lang;
   myRole?: string | undefined;
   acked?: boolean | undefined;
   prompt?: WerewolvesPrompt | undefined;
+  privateResults?: WerewolvesPrivateResult[] | undefined;
   endsAt?: number | undefined;
   myVote?: string | undefined;
   votedCount?: number | undefined;

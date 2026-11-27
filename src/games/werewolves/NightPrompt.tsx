@@ -43,7 +43,11 @@ export function NightPrompt({ prompt, myRole, players, meId, onSubmit }: {
       )}
       {selectablePlayers.length > 0 && (
         <div className="grid w-full grid-cols-3 gap-2">
-          {selectablePlayers.filter((p) => p.id !== meId || prompt.kind === "insomniac").map((p) => {
+          {selectablePlayers.filter((p) =>
+            p.id !== meId ||
+            prompt.kind === "insomniac" ||
+            prompt.result?.some((result) => result.target === p.id),
+          ).map((p) => {
             const r = resultFor(p.id);
             return (
               <button key={p.id} disabled={!!prompt.result} onClick={() => toggle(p.id)}
