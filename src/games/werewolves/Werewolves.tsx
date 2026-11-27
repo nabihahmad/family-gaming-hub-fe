@@ -117,10 +117,28 @@ export function Werewolves({
   const { t } = useTranslation();
   const others = room.players.filter((p) => p.id !== meId);
   const showNightDiscoveries = room.options?.nightDiscoveries !== false;
+  const availableRoles = view.availableRoles ?? [];
 
   return (
     <div className="night dark flex min-h-full flex-1 flex-col bg-background text-foreground">
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 px-5 py-8">
+        {(view.phase === "day" || view.phase === "vote") &&
+          availableRoles.length > 0 && (
+            <div className="flex w-full flex-wrap justify-center gap-2">
+              {availableRoles.map((role, index) => {
+                const name = t(`roles.${role}.name`);
+                return (
+                  <img
+                    key={`${role}-${index}`}
+                    src={`/roles/${role}.webp`}
+                    alt={name}
+                    title={name}
+                    className="h-10 w-10 rounded-full border-2 border-moon/50 object-cover shadow"
+                  />
+                );
+              })}
+            </div>
+          )}
         {view.phase === "role_reveal" && view.myRole && (
           <>
             <h2 className="text-xl font-semibold text-muted-foreground">

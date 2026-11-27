@@ -105,6 +105,7 @@ export interface WerewolvesView {
   acked?: boolean | undefined;
   prompt?: WerewolvesPrompt | undefined;
   privateResults?: WerewolvesPrivateResult[] | undefined;
+  availableRoles?: RoleId[] | undefined;
   endsAt?: number | undefined;
   myVote?: string | undefined;
   votedCount?: number | undefined;
