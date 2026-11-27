@@ -125,16 +125,28 @@ export function Werewolves({
         {(view.phase === "day" || view.phase === "vote") &&
           availableRoles.length > 0 && (
             <div className="flex w-full flex-wrap justify-center gap-2">
-              {availableRoles.map((role, index) => {
+              {availableRoles.map(({ role, count }) => {
                 const name = t(`roles.${role}.name`);
                 return (
-                  <img
-                    key={`${role}-${index}`}
-                    src={`/roles/${role}.webp`}
-                    alt={name}
-                    title={name}
-                    className="h-10 w-10 rounded-full border-2 border-moon/50 object-cover shadow"
-                  />
+                  <div
+                    key={role}
+                    className="relative h-10 w-10"
+                    title={count > 1 ? `${name} (${count})` : name}
+                  >
+                    <img
+                      src={`/roles/${role}.webp`}
+                      alt={count > 1 ? `${name} (${count})` : name}
+                      className="h-full w-full rounded-full border-2 border-moon/50 object-cover shadow"
+                    />
+                    {count > 1 && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute -end-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-moon px-1 text-[10px] font-bold text-background shadow"
+                      >
+                        {count}
+                      </span>
+                    )}
+                  </div>
                 );
               })}
             </div>
